@@ -3,6 +3,7 @@ import './App.scss';
 import _jobs from './data/jobs.json';
 import { JobsFull } from './components/JobsFull';
 import { JobsList } from './components/JobsList';
+import md5 from 'md5';
 
 const techItemsUrl = 'https://edwardtanguay.netlify.app/share/techItems.json';
 
@@ -21,7 +22,7 @@ function App() {
 	const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
 	const [fieldLogin, setFieldLogin] = useState('');
 	const [fieldPassword, setFieldPassword] = useState('');
-	const [formMessage, setFormMessage] =useState('');
+	const [formMessage, setFormMessage] = useState('');
 
 	const saveToLocalStorage = () => {
 		const jobAppState = {
@@ -74,14 +75,17 @@ function App() {
 		job.status = statuses[statusIndex];
 		setJobs([...jobs]);
 	};
-
+	//8c6744c9d42ec2cb9e8885b54ff744d0 = 776 Pasword
 	const handleSubmitButton = (e) => {
 		e.preventDefault();
-		if(fieldPassword === "123") {
-			setUserIsLoggedIn(true)
+		const hash = md5(fieldPassword);
+		if (hash === '8c6744c9d42ec2cb9e8885b54ff744d0') {
+			setUserIsLoggedIn(true);
 		} else {
-			setFormMessage("Please Check your password")
+			setFormMessage('Please Check your password');
 		}
+		setFieldLogin("")
+		setFieldPassword("")
 	};
 
 	const handleFieldLogin = (e) => {
@@ -89,6 +93,9 @@ function App() {
 	};
 	const handleFieldPassword = (e) => {
 		setFieldPassword(e.target.value);
+	};
+	const handleLogoutButton = (e) => {
+		setUserIsLoggedIn(false);
 	};
 
 	return (
@@ -98,7 +105,11 @@ function App() {
 
 			{userIsLoggedIn ? (
 				<>
-					<button onClick={handleToggleView}>Toggle View</button>
+					<div className="buttonArea">
+						<button onClick={handleToggleView}>Toggle View</button>
+						<button onClick={handleLogoutButton}>Logout</button>
+					</div>
+					
 					{displayKind === 'full' ? (
 						<JobsFull
 							jobs={jobs}
@@ -112,10 +123,10 @@ function App() {
 			) : (
 				<form>
 					<fieldset>
-					<legend>Welcome</legend>
-						{formMessage !== "" && (
-					
-						<div className="formMessage">{formMessage}</div>)}
+						<legend>Welcome</legend>
+						{formMessage !== '' && (
+							<div className="formMessage">{formMessage}</div>
+						)}
 						<div className="row">
 							<label htmlFor="login">Login</label>
 							<input
