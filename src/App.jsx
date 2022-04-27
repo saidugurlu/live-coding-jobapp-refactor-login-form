@@ -21,6 +21,7 @@ function App() {
 	const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
 	const [fieldLogin, setFieldLogin] = useState('');
 	const [fieldPassword, setFieldPassword] = useState('');
+	const [formMessage, setFormMessage] =useState('');
 
 	const saveToLocalStorage = () => {
 		const jobAppState = {
@@ -76,6 +77,11 @@ function App() {
 
 	const handleSubmitButton = (e) => {
 		e.preventDefault();
+		if(fieldPassword === "123") {
+			setUserIsLoggedIn(true)
+		} else {
+			setFormMessage("Please Check your password")
+		}
 	};
 
 	const handleFieldLogin = (e) => {
@@ -106,7 +112,10 @@ function App() {
 			) : (
 				<form>
 					<fieldset>
-						<legend>Welcome</legend>
+					<legend>Welcome</legend>
+						{formMessage !== "" && (
+					
+						<div className="formMessage">{formMessage}</div>)}
 						<div className="row">
 							<label htmlFor="login">Login</label>
 							<input

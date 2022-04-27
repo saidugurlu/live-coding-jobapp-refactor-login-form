@@ -95,6 +95,10 @@ body {
 		}
 		form {
 			width: 600px;
+			.formMessage{
+				color: yellow;
+				margin: -20px 0 0 120px;
+			}
 		 
 			fieldset {
 				border: 1px solid #888;
