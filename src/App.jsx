@@ -5,15 +5,13 @@ import { JobsFull } from './components/JobsFull';
 import { JobsList } from './components/JobsList';
 import md5 from 'md5';
 
-const techItemsUrl = 'https://edwardtanguay.netlify.app/share/techItems.json';
-
 _jobs.forEach((job) => {
 	job.status = 'accepted';
 });
 
-const statuses = ['send', 'wait', 'interview', 'declined', 'accepted'];
+const techItemsUrl = 'https://edwardtanguay.netlify.app/share/techItems.json';
 
-let _techItems = [{}];
+const statuses = ['send', 'wait', 'interview', 'declined', 'accepted'];
 
 function App() {
 	const [displayKind, setDisplayKind] = useState('');
@@ -23,20 +21,22 @@ function App() {
 	const [fieldLogin, setFieldLogin] = useState('');
 	const [fieldPassword, setFieldPassword] = useState('');
 	const [formMessage, setFormMessage] = useState('');
+	const [userGroup, setUserGroup] = useState('');
 
 	const saveToLocalStorage = () => {
-		const jobAppState = {
-			displayKind,
-			jobs,
-		};
-		localStorage.setItem('jobAppState', JSON.stringify(jobAppState));
+		if (displayKind !== '') {
+			const jobAppState = {
+				displayKind,
+				jobs,
+			};
+			localStorage.setItem('jobAppState', JSON.stringify(jobAppState));
+		}
 	};
 
-	const loadFromLocalStorage = () => {
+	const loadLocalStorage = () => {
 		const jobAppState = JSON.parse(localStorage.getItem('jobAppState'));
-		// updateWithJsonFile(_jobs, jobAppState);
 		if (jobAppState === null) {
-			setDisplayKind('full');
+			setDisplayKind('list');
 			setJobs(_jobs);
 		} else {
 			setDisplayKind(jobAppState.displayKind);
@@ -47,14 +47,14 @@ function App() {
 	const loadTechItems = () => {
 		(async () => {
 			const response = await fetch(techItemsUrl);
-			_techItems = await response.json();
-			setTechItems(_techItems);
+			const data = await response.json();
+			setTechItems(data);
 		})();
 	};
 
 	useEffect(() => {
+		loadLocalStorage();
 		loadTechItems();
-		loadFromLocalStorage();
 	}, []);
 
 	useEffect(() => {
@@ -75,41 +75,64 @@ function App() {
 		job.status = statuses[statusIndex];
 		setJobs([...jobs]);
 	};
-	//8c6744c9d42ec2cb9e8885b54ff744d0 = 776 Pasword
+
 	const handleSubmitButton = (e) => {
 		e.preventDefault();
 		const hash = md5(fieldPassword);
-		if (hash === '8c6744c9d42ec2cb9e8885b54ff744d0') {
+		//pasword = 776
+		if (
+			fieldLogin === 'me' &&
+			hash === '8c6744c9d42ec2cb9e8885b54ff744d0'
+		) {
+			setUserGroup('fullAccessMembers');
 			setUserIsLoggedIn(true);
+			setFormMessage('');
 		} else {
-			setFormMessage('Please Check your password');
+			setFormMessage('bad login');
 		}
-		setFieldLogin("")
-		setFieldPassword("")
+		// Pasword : 887
+		if (
+			fieldLogin === 'guest' &&
+			hash === '7ce3284b743aefde80ffd9aec500e085'
+		) {
+			setUserGroup('guests');
+			setUserIsLoggedIn(true);
+			setFormMessage('');
+			setDisplayKind('list');
+		} else {
+			setFormMessage('bad login');
+		}
+
+		setFieldLogin('');
+		setFieldPassword('');
 	};
 
 	const handleFieldLogin = (e) => {
 		setFieldLogin(e.target.value);
 	};
+
 	const handleFieldPassword = (e) => {
 		setFieldPassword(e.target.value);
 	};
-	const handleLogoutButton = (e) => {
+
+	const handleLogoutButton = () => {
+		setFormMessage('');
 		setUserIsLoggedIn(false);
 	};
 
 	return (
 		<div className="App">
 			<h1>Job Application Process</h1>
-			{/* 	<div>techitems: {techItems.length}</div> */}
-
 			{userIsLoggedIn ? (
 				<>
 					<div className="buttonArea">
-						<button onClick={handleToggleView}>Toggle View</button>
+						{userGroup === 'fullAccessMembers' && (
+							<button onClick={handleToggleView}>
+								Toggle View
+							</button>
+						)}
 						<button onClick={handleLogoutButton}>Logout</button>
 					</div>
-					
 					{displayKind === 'full' ? (
 						<JobsFull
 							jobs={jobs}
@@ -128,13 +151,13 @@ function App() {
 							<div className="formMessage">{formMessage}</div>
 						)}
 						<div className="row">
-							<label htmlFor="login">Login</label>
+							<label htmlFor="login2">Login</label>
 							<input
 								value={fieldLogin}
 								onChange={handleFieldLogin}
 								autoFocus
 								type="text"
-								id="login"
+								id="login2"
 							/>
 						</div>
 						<div className="row">
