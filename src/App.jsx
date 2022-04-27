@@ -19,6 +19,8 @@ function App() {
 	const [jobs, setJobs] = useState([]);
 	const [techItems, setTechItems] = useState([]);
 	const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
+	const [fieldLogin, setFieldLogin] = useState('');
+	const [fieldPassword, setFieldPassword] = useState('');
 
 	const saveToLocalStorage = () => {
 		const jobAppState = {
@@ -72,6 +74,17 @@ function App() {
 		setJobs([...jobs]);
 	};
 
+	const handleSubmitButton = (e) => {
+		e.preventDefault();
+	};
+
+	const handleFieldLogin = (e) => {
+		setFieldLogin(e.target.value);
+	};
+	const handleFieldPassword = (e) => {
+		setFieldPassword(e.target.value);
+	};
+
 	return (
 		<div className="App">
 			<h1>Job Application Process</h1>
@@ -91,22 +104,33 @@ function App() {
 					)}
 				</>
 			) : (
-				<div> <form>
-				<fieldset>
-					<legend>Welcome</legend>
-					<div className="row">
-						<label htmlFor="login">Login</label>
-						<input type="text" id="login" />
-					</div>
-					<div className="row">
-						<label htmlFor="password">Password</label>
-						<input type="password" id="password" />
-					</div>
-					<div className="buttonRow">
-						<button>Enter</button>
-					</div>
-				</fieldset>
-			</form></div>
+				<form>
+					<fieldset>
+						<legend>Welcome</legend>
+						<div className="row">
+							<label htmlFor="login">Login</label>
+							<input
+								value={fieldLogin}
+								onChange={handleFieldLogin}
+								autoFocus
+								type="text"
+								id="login"
+							/>
+						</div>
+						<div className="row">
+							<label htmlFor="password">Password</label>
+							<input
+								value={fieldPassword}
+								onChange={handleFieldPassword}
+								type="password"
+								id="password"
+							/>
+						</div>
+						<div className="buttonRow">
+							<button onClick={handleSubmitButton}>Enter</button>
+						</div>
+					</fieldset>
+				</form>
 			)}
 		</div>
 	);
