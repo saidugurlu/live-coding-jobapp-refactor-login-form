@@ -93,6 +93,57 @@ body {
 				}
 			}
 		}
-
+		form {
+			width: 600px;
+		 
+			fieldset {
+				border: 1px solid #888;
+				border-radius: 5px;
+				padding: 20px;
+		 
+				legend {
+					font-size: 1.2rem;
+				}
+		 
+				.row {
+					display: flex;
+					align-content: start;
+					padding: 5px;
+		 
+					label {
+						&:after {
+							content: ":";
+						}
+		 
+						width: 115px;
+						margin: 0 0 10px 0;
+					}
+		 
+					input {
+						font-size: 1rem;
+						width: 300px;
+					}
+				}
+		 
+				.invalid input {
+					color: red;
+				}
+		 
+				.note {
+					font-size: 1rem;
+					margin: 0 0 20px 97px;
+				}
+		 
+				.buttonRow {
+					display: flex;
+					justify-content: right;
+		 
+					button {
+						font-size: 1rem;
+						padding: 5px;
+					}
+				}
+			}
+		}
 	}
 }
